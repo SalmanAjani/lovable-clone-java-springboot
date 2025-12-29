@@ -1,0 +1,1 @@
+In progress lovable clone based on latest java and spring practices.
