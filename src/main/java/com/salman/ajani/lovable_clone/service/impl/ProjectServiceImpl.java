@@ -41,7 +41,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         project = projectRepository.save(project);
 
-        return projectMapper.toProjectResponse(project);
+        return projectMapper.toProjectResponseDto(project);
     }
 
     @Override
@@ -60,7 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectResponse getUserProjectById(Long id, Long userId) {
         Project project = getAccessibleProjectById(id, userId);
-        return projectMapper.toProjectResponse(project);
+        return projectMapper.toProjectResponseDto(project);
     }
 
     @Override
@@ -74,7 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
         project.setName(request.name());
         project = projectRepository.save(project);
 
-        return projectMapper.toProjectResponse(project);
+        return projectMapper.toProjectResponseDto(project);
     }
 
     @Override

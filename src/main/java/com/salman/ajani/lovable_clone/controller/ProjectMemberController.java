@@ -1,9 +1,9 @@
 package com.salman.ajani.lovable_clone.controller;
 
-import com.salman.ajani.lovable_clone.service.ProjectMemberService;
 import com.salman.ajani.lovable_clone.dto.member.InviteMemberRequest;
 import com.salman.ajani.lovable_clone.dto.member.MemberResponse;
 import com.salman.ajani.lovable_clone.dto.member.UpdateMemberRoleRequest;
+import com.salman.ajani.lovable_clone.service.ProjectMemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +30,8 @@ public class ProjectMemberController {
         return ResponseEntity.status(HttpStatus.CREATED).body(projectMemberService.inviteMember(projectId, request, userId));
     }
 
+    //TODO: Create API to Accept/Decline project invite
+
     @PatchMapping("/{memberId}")
     public ResponseEntity<MemberResponse> updateMemberRole(@PathVariable Long projectId, @PathVariable Long memberId, @RequestBody UpdateMemberRoleRequest request){
         Long userId = 1L;
@@ -37,8 +39,9 @@ public class ProjectMemberController {
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<MemberResponse> deleteMember(@PathVariable Long projectId, @PathVariable Long memberId){
+    public ResponseEntity<Void> removeMember(@PathVariable Long projectId, @PathVariable Long memberId){
         Long userId = 1L;
-        return ResponseEntity.ok(projectMemberService.deleteProjectMember(projectId, memberId, userId));
+        projectMemberService.removeProjectMember(projectId, memberId, userId);
+        return ResponseEntity.noContent().build();
     }
 }
