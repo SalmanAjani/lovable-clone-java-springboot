@@ -25,11 +25,12 @@ public class User {
     String username;
     String password;
     String name;
-    
+
     @CreationTimestamp
     Instant createdAt;
 
     @UpdateTimestamp
     Instant updatedAt;
+    
     Instant deletedAt; // soft delete
 }
