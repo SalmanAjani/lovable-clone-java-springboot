@@ -7,6 +7,7 @@ import com.salman.ajani.lovable_clone.entity.Project;
 import com.salman.ajani.lovable_clone.entity.ProjectMember;
 import com.salman.ajani.lovable_clone.entity.ProjectMemberId;
 import com.salman.ajani.lovable_clone.entity.User;
+import com.salman.ajani.lovable_clone.error.BadRequestException;
 import com.salman.ajani.lovable_clone.error.ResourceNotFoundException;
 import com.salman.ajani.lovable_clone.mapper.ProjectMemberMapper;
 import com.salman.ajani.lovable_clone.repository.ProjectMemberRepository;
@@ -18,6 +19,7 @@ import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -36,6 +38,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     AuthUtil authUtil;
 
     @Override
+    @PreAuthorize("@security.canViewProjectMembers(#projectId)")
     public List<MemberResponse> getProjectMembers(Long projectId) {
         Long userId = authUtil.getCurrentUserId();
 
@@ -48,6 +51,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
+    @PreAuthorize("@security.canManageProjectMembers(#projectId)")
     public MemberResponse inviteMember(Long projectId, InviteMemberRequest request) {
         Long userId = authUtil.getCurrentUserId();
 
@@ -56,13 +60,13 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
         User invitee = userRepository.findByUsername(request.username()).orElseThrow();
 
         if (invitee.getId().equals(userId)) {
-            throw new RuntimeException("Cannot invite yourself");
+            throw new BadRequestException("Cannot invite yourself");
         }
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, invitee.getId());
 
         if (projectMemberRepository.existsById(projectMemberId)) {
-            throw new RuntimeException("Cannot invite once again");
+            throw new BadRequestException("Cannot invite once again");
         }
 
         ProjectMember member = ProjectMember.builder()
@@ -79,6 +83,7 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
+    @PreAuthorize("@security.canManageProjectMembers(#projectId)")
     public MemberResponse updateMemberRole(Long projectId, Long memberId, UpdateMemberRoleRequest request) {
         Long userId = authUtil.getCurrentUserId();
 
@@ -95,14 +100,15 @@ public class ProjectMemberServiceImpl implements ProjectMemberService {
     }
 
     @Override
+    @PreAuthorize("@security.canManageProjectMembers(#projectId)")
     public void removeProjectMember(Long projectId, Long memberId) {
         Long userId = authUtil.getCurrentUserId();
-        
+
         Project project = getAccessibleProjectById(projectId, userId);
 
         ProjectMemberId projectMemberId = new ProjectMemberId(projectId, memberId);
         if (!projectMemberRepository.existsById(projectMemberId)) {
-            throw new RuntimeException("Project member not found in project");
+            throw new BadRequestException("Project member not found in project");
         }
 
         projectMemberRepository.deleteById(projectMemberId);
