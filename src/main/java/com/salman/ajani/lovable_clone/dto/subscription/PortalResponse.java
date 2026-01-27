@@ -1,4 +1,4 @@
 package com.salman.ajani.lovable_clone.dto.subscription;
 
-public record PortalResponse(Long portalUrl) {
+public record PortalResponse(String portalUrl) {
 }

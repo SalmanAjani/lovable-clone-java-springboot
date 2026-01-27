@@ -3,7 +3,7 @@ package com.salman.ajani.lovable_clone.enums;
 public enum SubscriptionStatus {
     ACTIVE,
     TRIALING,
-    CANCELLED,
+    CANCELED,
     PAST_DUE,
     INCOMPLETE
 }
