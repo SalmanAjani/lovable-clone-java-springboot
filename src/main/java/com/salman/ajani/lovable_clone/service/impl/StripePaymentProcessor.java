@@ -127,7 +127,7 @@ public class StripePaymentProcessor implements PaymentProcessor {
 
     public void handleSessionCompleted(Session session, Map<String, String> metadata) {
         if (session == null) {
-            log.error("session object was inside handleSessionCompleted");
+            log.error("session object was null inside handleSessionCompleted");
             return;
         }
 
