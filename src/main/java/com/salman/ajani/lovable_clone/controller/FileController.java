@@ -1,18 +1,13 @@
 package com.salman.ajani.lovable_clone.controller;
 
 import com.salman.ajani.lovable_clone.dto.project.FileContentResponse;
-import com.salman.ajani.lovable_clone.dto.project.FileNode;
+import com.salman.ajani.lovable_clone.dto.project.FileTreeResponse;
 import com.salman.ajani.lovable_clone.service.ProjectFileService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,12 +18,14 @@ public class FileController {
     ProjectFileService projectFileService;
 
     @GetMapping
-    public ResponseEntity<List<FileNode>> getFileTree(@PathVariable Long projectId) {
+    public ResponseEntity<FileTreeResponse> getFileTree(@PathVariable Long projectId) {
         return ResponseEntity.ok(projectFileService.getFileTree(projectId));
     }
 
-    @GetMapping("/{*path}")
-    public ResponseEntity<FileContentResponse> getFile(@PathVariable Long projectId, @PathVariable String path) {
+    @GetMapping("/content")
+    public ResponseEntity<FileContentResponse> getFile(
+            @PathVariable Long projectId,
+            @RequestParam String path) {
         return ResponseEntity.ok(projectFileService.getFileContent(projectId, path));
     }
 }
